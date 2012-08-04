@@ -1,0 +1,6 @@
+*-build-*
+*kate-swp
+Thumbs.db
+*.pyc
+*~
+__pycache__

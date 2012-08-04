@@ -9,7 +9,7 @@ import comm
 # Parse options
 
 clientconf = dict()
-stringparams = ('address', 'name')
+stringparams = ('address', 'name', 'port')
 
 for opt in sys.argv[1:]:
     if opt.startswith('-C'):
@@ -24,6 +24,7 @@ for opt in sys.argv[1:]:
 # Begin communication
 print (value)
 me = comm.Client(value)
+#me = comm.Client (**clientconf)
 
 """i = 0
 for (board, myself) in me.connect():

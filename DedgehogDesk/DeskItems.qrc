@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>apple_big.png</file>
+        <file>cabbage_big.png</file>
+        <file>apple.png</file>
+        <file>big_hedgehog.png</file>
+        <file>cabbage.png</file>
+        <file>dying_hedgehog.png</file>
+        <file>grass.png</file>
+        <file>hedgehog.png</file>
+        <file>kit.png</file>
+        <file>kit_big.png</file>
+    </qresource>
+</RCC>

@@ -54,8 +54,9 @@ class Connection(object):
             raise ProtoError('failed to decode packet')
 
 class Server(object):
-    def __init__(self, width, height, players, address='127.0.0.1', port=9966): # TODO timeout?
+    def __init__(self, width, height, players, address='127.0.0.1', port=8966): # TODO timeout?
         self.width, self.height = width, height
+        print (port)
           # TODO Broadcast more game parameters (in a dict?)
         self.count = players
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -173,7 +174,8 @@ class Player(Connection):
         self.status = 'ok'
 
 class Client(Connection):
-    def __init__(self, name, address='127.0.0.1', port=9966):
+    def __init__(self, name, address='127.0.0.1', port = 8966):
+        print (port)
         self.name = name
         self.server = (address, port)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
