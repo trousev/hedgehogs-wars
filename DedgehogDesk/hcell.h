@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QGraphicsItem>
-#define CELL_SIZE 64.0
+#define CELL_SIZE 32.0
 
 
 class HCell : public QGraphicsItem

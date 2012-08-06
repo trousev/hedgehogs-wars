@@ -25,31 +25,19 @@ for opt in sys.argv[1:]:
 print (value)
 me = comm.Client(value)
 
-"""i = 0
-for (board, myself) in me.connect():
-    print (board)
-    print ("next")
-    print (myself)
-    if i == 0:
-        me.go (1,1)
-        
-        
-    elif i == 1:
-        me.relax()
-               
-    
-    i = ( i + 1 ) % 2
-    
-"""
-neighbours = [(1, 0), (1, 1), (0, 1), (-1,0), (0,-1), (-1,-1), (1,-1), (-1,1)]
 
+neighbours = [(1, 0), (1, 1), (0, 1), (-1,0), (0,-1), (-1,-1), (1,-1), (-1,1)]
+#Eating
 a, b = 15, 15
 for i, (board, myself) in enumerate(me.connect()):
     print(board)
     print("next")
     print(myself)
-    hed_flag = False
+    stuff_flag = False
     border_flag = False
+    
+    #First phase begins
+    
     
     if i % 2 == 0:
         x = myself[4]
@@ -75,11 +63,12 @@ for i, (board, myself) in enumerate(me.connect()):
                 if board[x+dx][y+dy][0]!=0:
                     print (board[x+dx][y+dy][0])
                     print ("coord: ", dx, dy)
-                    hed_flag = True
+                    stuff_flag = True
                     me.go(dx, dy)
                     break
-            if not hed_flag:
+            if not stuff_flag:
                 me.go(randrange(3)-1, randrange(3)-1)
+    #Second phase begins:
     else:
        x = myself[4]
        y = myself[5]

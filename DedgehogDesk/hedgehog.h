@@ -10,7 +10,10 @@ class HedgeHog : public QGraphicsItem
     QStringList propsorder;
     QLabel * _myLabel;
 public:
+    int x;
+    int y;
     void setProperty(QString name, QString value);
+    QString property(QString name);
     QLabel * label();
 
     static void initResources();

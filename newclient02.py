@@ -25,24 +25,9 @@ for opt in sys.argv[1:]:
 print (value)
 me = comm.Client(value)
 
-"""i = 0
-for (board, myself) in me.connect():
-    print (board)
-    print ("next")
-    print (myself)
-    if i == 0:
-        me.go (1,1)
-        
-        
-    elif i == 1:
-        me.relax()
-               
-    
-    i = ( i + 1 ) % 2
-    
-"""
-neighbours = [(1, 0), (1, 1), (0, 1), (-1,0), (0,-1), (-1,-1), (1,-1), (-1,1)]
 
+neighbours = [(1, 0), (1, 1), (0, 1), (-1,0), (0,-1), (-1,-1), (1,-1), (-1,1)]
+#Pricking h.
 a, b = 15, 15
 for i, (board, myself) in enumerate(me.connect()):
     print(board)

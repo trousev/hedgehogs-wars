@@ -2,6 +2,7 @@
 #import pygame
 import sys
 from random import random
+from HedgehogClient import connectivity
 #from pygame.locals import *
 #import os
 #if os.name == 'nt':
@@ -17,7 +18,7 @@ class World:
         #I'm hedgehogs' world. My size is size_a, size_b.
         def __init__(self, size_a=10, size_b=5, delta_health_collision=-3, delta_health_cabbage=-20, bag_size=3,
                      max_health=100, max_power=100, delta_health_kit=50, delta_power_apple=10,
-                     cabbage_min_d_sqr=9, cabbage_max_d_sqr=25, prick_delta_power_max=-10):
+                     cabbage_min_d_sqr=4, cabbage_max_d_sqr=36, prick_delta_power_max=-10):
                 self.cell_size=32
                 self.cells=[[Cell(i, j, self) for j in range(size_b)] for i in range(size_a)]
                 self.world_info=[[0 for j in range(size_b)] for i in range(size_a)]
@@ -57,6 +58,11 @@ class World:
                 for k in range (n):
                         i,j=int(random()*self.size_a),int(random()*self.size_b)
                         self.cells[i][j].new_stuff(type)
+                        ttp = self.cells[i][j].stuff
+                        if ttp == 0:
+                            ttp = "none"
+                        connectivity.Session.graphics_item.morph(i,j,ttp)
+                        print ("Terrain morphed to "+ttp)
         def inc_moving_counter(self):
                 #When all the hedgehogs have chosen their moving it makes world thinking
                 self.moving_counter+=1
@@ -105,9 +111,10 @@ class World:
                 self.pricking_hedgehogs=[]"""
         def start_moving(self):
                 #Машет руками так, что все в результате благополучно подвинутся.
-                for i in range (self.hedgehog_num):
+                print ("Машем руками: "+str(len(self.moving)))
+                for i in range (len(self.moving)):
                         #Make sure, the hedgehogs aren't ghosts.
-                        for j in range (self.hedgehog_num):
+                        for j in range (len(self.moving)):
                                 if i!=j:
                                         if ((self.moving[i][3:5]==self.moving[j][1:3])
                                         and (self.moving[i][1:3]==self.moving[j][3:5])):
@@ -140,43 +147,60 @@ class World:
                 for i in self.moving:
                         i[0].change_health(i[5])
                 for i in (self.ready_to_die):
+                    try:
                         self.moving.remove(i)
+                    except:
+                        print ("=== FATAL ERROR ===")
+                        print ("Hedgehog removed with no actual object")
+                        print (i)
+                        print ("===================")
+                        raise (Exception("Fatal Error"))
                 self.kill_ready_to_die()
-                #self.draw_moving() #TODO graph!!
+                self.draw_moving() #TODO graph!!
                 for i in self.moving:
                         i[0].move(i[3:5])
                 self.moving_counter=0
                 self.moving=[]
-        """def draw_moving(self):
+        def draw_moving(self):
                 #Draws hedgehog's and cabbage moving
                 c=len(self.flying_cabbage)
                 if c:
                         for i in self.flying_cabbage:
-                                i.append([i[0]*cell_size, i[1]*cell_size])
-                                i.append([i[2]*cell_size/moving_time, i[3]*cell_size/moving_time])
+                            print ("Cabbage is flying here")
+                            connectivity.Session.graphics_item.throw_cabbage(i[0],i[1],i[0]+i[2],i[1]+i[3])
                 if len(self.moving):
                         for i in self.moving:
-                                i.append([(i[3]-i[1])*cell_size/moving_time, (i[4]-i[2])*cell_size/moving_time])
-                                if (i[6][0] or i[6][1]):
-                                        i.append(1)
-                                else:
-                                        i.append(0)
-                        for t in range (moving_time):
-                              self.draw()
-                              for i in self.moving:
-                                      if i[7]:
-                                              i[0].pos[0]+=i[6][0]
-                                              i[0].pos[1]+=i[6][1]
-                                              i[0].draw_moving(t)
-                                      else:
-                                              i[0].draw()
-                              if c:
-                                      for i in self.flying_cabbage:
-                                              i[4][0]+=i[5][0]
-                                              i[4][1]+=i[5][1]
-                                              screen.blit(eval("pic_flying_cabbage"), i[4])
-                              clock.tick(18)
-                              pygame.display.update()"""
+                            dx = i[3]-i[1]
+                            dy = i[4]-i[2]
+                            print ("Move: "+str(dx)+", "+str(dy))
+                            hog = i[0]
+                            #hn = connectivity.Session.graphics_item.hn 
+                            #print (hn)
+                            #print (i)
+                            hog.graphics_item.move(str(dx),str(dy))
+
+                            # connectivity.Session.graphics_item.hn[hog_name].move(dx,dy)
+                #                i.append([(i[3]-i[1])*cell_size/moving_time, (i[4]-i[2])*cell_size/moving_time])
+                #                if (i[6][0] or i[6][1]):
+                #                        i.append(1)
+                #                else:
+                #                        i.append(0)
+                #        for t in range (moving_time):
+                #              self.draw()
+                #              for i in self.moving:
+                #                      if i[7]:
+                #                              i[0].pos[0]+=i[6][0]
+                #                              i[0].pos[1]+=i[6][1]
+                #                              i[0].draw_moving(t)
+                #                      else:
+                #                              i[0].draw()
+                #              if c:
+                #                      for i in self.flying_cabbage:
+                #                              i[4][0]+=i[5][0]
+                #                              i[4][1]+=i[5][1]
+                #                              screen.blit(eval("pic_flying_cabbage"), i[4])
+                #              clock.tick(18)
+                #              pygame.display.update()
         def kill_ready_to_die(self):
                 #For hedgehogs
                 #self.draw_dying() # TODO
@@ -194,18 +218,21 @@ class World:
         def throw_all_cabbage(self):
                 #Throws cabbage from hedgehog at i,j to i+delta_i, j+delta_j cell.
                 #Thinks about results
+                # Me too.
                 for c in self.flying_cabbage:
                         self.cells[c[0]+c[2]][c[1]+c[3]].kill_hedgehog()
                         for d_i in [1, 0, -1]:
                                 for d_j in [1, 0, -1]:
                                         self.cabbage_damage(c[0]+c[2]+d_i, c[1]+c[3]+d_j)
-                self.flying_cabage=[]
+                self.flying_cabbage=[]
         def throw_cabbage(self, i, j, delta_i, delta_j):
                 #Prepares the right array.
                 if 0<=i+delta_i<self.size_a and 0<=j+delta_j<self.size_b:
                         self.flying_cabbage.append([i,j,delta_i,delta_j])
+                        print ("CABBAGE THROWED!!!")
+                        return (0)
                 else:
-                        return(1)
+                        return (1)
         def cabbage_damage(self,i ,j):
                 #If you were a bit lucky
                 if (0<=i<self.size_a) and (0<=j<self.size_b):
@@ -215,7 +242,7 @@ class World:
                 return(-int((delta_i**2+delta_j**2)**0.5))
         def prick_damage(self, delta_power):
                 #Counts the damege from pricking with delta_power
-                return(delta_power-1)
+                return(delta_power-10)
         def dec_hedgehog_num (self):
                 self.hedgehog_num-=1
                 if self.hedgehog_num==1:
@@ -252,6 +279,7 @@ class World:
                 
 class Cell:
         #I'm a cell in this world. i and j are my coordinates.
+        StuffNames = ["none","apple","kit","cabbage"]
         def __init__ (self, i, j, world):
                 self.i, self.j=i, j
                 self.hedgehog=0
@@ -288,12 +316,15 @@ class Cell:
                 #returns object, deletes it from the cell. If there are no object, returns 0
                 stuff=self.stuff
                 self.stuff=0
+                connectivity.Session.graphics_item.morph(self.i, self.j, "none")
                 #self.draw() #TODO
                 #self.hedgehog.draw() #TODO
                 return (stuff)
         def prick_hedgehog (self, delta_power):
                 #someone pricks your hedgehog, bro.
+                print("Prick Hedgehog call with power="+str(delta_power))
                 if self.hedgehog:
+                        print(str(self.hedgehog)+str(" is getting ")+str(self.world.prick_damage(delta_power))+str(" damage"))
                         self.hedgehog.change_health(self.world.prick_damage(delta_power))
         def get_info(self):
                 #Returns the information about self objects and hedgehog
@@ -322,6 +353,13 @@ class Hedgehog:
                 #self.surname=int random()*1000
                 return None
         def __str__ (self): return "1"
+        # This methos updates inventory of hedgehog
+        def update_inventory(self):
+            inv = ""
+            for s in self.bag:
+                inv += s[0]
+                inv += "; "
+            self.graphics_item.set_inventory(inv)
         def look_inside(self):
                 #Get the information about health, power and bag
                 print("Name=%s, health=%d, power=%d, bag=%s, i=%d, j=%d" %(self.name, self.health, self.power, self.bag, self.i, self.j))
@@ -370,11 +408,14 @@ class Hedgehog:
                         self.become_ready_to_die()
                 elif self.health>self.world.max_health:
                                 self.health=self.world.max_health
+                self.graphics_item.set_health(self.health)
         def change_power(self, delta_power):
                 #Comes as is.
+                # print ("ChangePower call with dP="+str(delta_power))
                 self.power+=delta_power
                 if self.power>self.world.max_power:
                         self.power=self.world.max_power
+                self.graphics_item.set_power(self.power)
         def become_ready_to_die(self):
                 self.world.ready_to_die.append(self)
                 self.world.hedgehogs.discard(self)
@@ -383,11 +424,12 @@ class Hedgehog:
         def die (self):
                 #You've failed the game.
                 print("I've died!")
+                self.graphics_item.kill()
                 self.health=0
                 self.world.cells[self.i][self.j].del_hedgehog(self)
                 #Here should be something
         def throw_cabbage(self, delta_i, delta_j):
-                #Tries to use shotgun.
+                #Tries to use shotgun. 
                 distance_sqr=delta_i**2+delta_j**2
                 if ("cabbage" in self.bag):
                         #Do you really have cabbage?
@@ -397,13 +439,14 @@ class Hedgehog:
                                 if (self.power>=delta_power):
                                         #Do you own the power? Ok, then do it
                                         if self.world.throw_cabbage(self.i, self.j, delta_i, delta_j):
-                                                self.cabbage_fail()
+                                                self.cabbage_fail("Just failure")
                                         self.bag.remove("cabbage")
                                         self.power+=delta_power
-                                else: self.cabbage_fail()
-                        else: self.cabbage_fail()
-                else:self.cabbage_fail()
-        def cabbage_fail(self):
+                                else: self.cabbage_fail("No power")
+                        else: self.cabbage_fail("No distance")
+                else:self.cabbage_fail("No cabbage")
+        def cabbage_fail(self, reason):
+                print ("Cabbage failure because of"+str(reason))
                 #It happens, when the hedgehog can't throw cabbage for some reason
                 pass
         def pick_in_bag (self):
@@ -427,6 +470,7 @@ class Hedgehog:
                 if food=="cabbage":
                         self.become_ready_to_die()
         def prick(self, delta_i, delta_j, delta_power):
+                print("PRICK CALLED, REALLY!!!")
                 #Pricks with a needle hedgehod on that cell with power. delta_i, delta_j should be +-1
                 if delta_power<self.world.prick_delta_power_max:
                         delta_power=self.world.prick_delta_power_max

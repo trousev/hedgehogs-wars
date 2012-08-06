@@ -9,6 +9,11 @@ void HedgeHog::initResources()
     _Hedge_dog = QImage(":/hedgehog.png").scaled(CELL_SIZE,CELL_SIZE);
     _Hedge_dog_dead = QImage(":/dying_hedgehog.png").scaled(CELL_SIZE,CELL_SIZE);
 }
+QString HedgeHog::property(QString name)
+{
+    return props[name];
+}
+
 void HedgeHog::setProperty(QString name, QString value)
 {
     if(!propsorder.contains(name))
@@ -35,6 +40,8 @@ HedgeHog::HedgeHog(QGraphicsItem *parent, QGraphicsScene *scene)
 {
     killed   = false;
     _myLabel = new QLabel("Hedgehog");
+    x=0;
+    y=0;
 }
 
 QRectF HedgeHog::boundingRect() const

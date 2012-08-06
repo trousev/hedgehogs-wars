@@ -24,26 +24,9 @@ for opt in sys.argv[1:]:
 # Begin communication
 print (value)
 me = comm.Client(value)
-#me = comm.Client (**clientconf)
 
-"""i = 0
-for (board, myself) in me.connect():
-    print (board)
-    print ("next")
-    print (myself)
-    if i == 0:
-        me.go (1,1)
-        
-        
-    elif i == 1:
-        me.relax()
-               
-    
-    i = ( i + 1 ) % 2
-    
-"""
 neighbours = [(1, 0), (1, 1), (0, 1), (-1,0), (0,-1), (-1,-1), (1,-1), (-1,1)]
-
+#Stupid h.
 a, b = 15, 15
 for i, (board, myself) in enumerate(me.connect()):
     print(board)
@@ -74,6 +57,11 @@ for i, (board, myself) in enumerate(me.connect()):
             me.go(dx,dy)
         else:
             me.go(randrange(3)-1, randrange(3)-1)
+            
+        #We don't want to have problems with memory!
+        
+    #Second phase begins:    
+    
     else:
        x = myself[4]
        y = myself[5]

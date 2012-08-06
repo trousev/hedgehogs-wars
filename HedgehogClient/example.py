@@ -22,13 +22,15 @@ try:
         h.move(5,5)
 
 
-    for i in reversed(range(10)):
+    for i in reversed(range(3)):
         time.sleep(1)
         s.message(str(i)+" seconds left!")
 
     for i in range(10):
         for h in hogs:
             h.move(random.randint(-1,1),random.randint(-1,1))
+        for c in range(3):
+            s.throw_cabbage(random.randint(0,9),random.randint(0,9),random.randint(0,9),random.randint(0,9))
         time.sleep(3)
 
     for h in hogs:

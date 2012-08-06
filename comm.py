@@ -60,6 +60,7 @@ class Server(object):
           # TODO Broadcast more game parameters (in a dict?)
         self.count = players
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._socket.bind((address, port))
 
     def greet(self):

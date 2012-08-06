@@ -34,12 +34,17 @@ class Session:
 
     def morph(self,x,y,cell):
         time.sleep(0.05)
-        st = "morph "+str(x)+" "+str(y)+" "+cell+"\n"
+        st = "morph "+str(x)+" "+str(y)+" "+str(cell)+"\n"
         self.s.send(st.encode())
         self.s.recv(1024)
     def message(self, message):
         time.sleep(0.05)
         st = "message "+str(message)
+        self.s.send(st.encode())
+        self.s.recv(1024)
+    def throw_cabbage(self,fromX, fromY, toX, toY):
+        time.sleep(0.05)
+        st = "throw {0} {1} {2} {3}".format(fromX,fromY,toX,toY)
         self.s.send(st.encode())
         self.s.recv(1024)
 

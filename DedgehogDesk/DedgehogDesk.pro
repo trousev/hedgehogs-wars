@@ -14,12 +14,16 @@ SOURCES += main.cpp\
         umain.cpp \
     hcell.cpp \
     serverthread.cpp \
-    hedgehog.cpp
+    hedgehog.cpp \
+    flyingcabbage.cpp \
+    pysyntax.cpp
 
 HEADERS  += umain.h \
     hcell.h \
     serverthread.h \
-    hedgehog.h
+    hedgehog.h \
+    flyingcabbage.h \
+    pysyntax.h
 
 FORMS    += umain.ui
 

@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     QObject::connect(&t,SIGNAL(take_hedgehog(int)),&w,SLOT(takeHedgehog(int)));
     QObject::connect(&t,SIGNAL(alter_hedgehog(int,QString,QString)),&w,SLOT(setHedgehog(int,QString,QString)));
     QObject::connect(&t,SIGNAL(status(QString))  ,&w,SLOT(setStatus(QString)));
+    QObject::connect(&t,SIGNAL(cabbage(int,int,int,int)),&w,SLOT(throwCabbage(int,int,int,int)));
     w.show();
     return a.exec();
 }
