@@ -1,3 +1,10 @@
+*-build-*
+*kate-swp
+Thumbs.db
+*.pyc
+*~
+__pycache__
+
 *.py[co]
 
 # Packages
