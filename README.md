@@ -1,2 +1,3 @@
 hedgehogs-wars
 ==============
+Hello, world!
