@@ -19,19 +19,23 @@ void HedgeHog::setProperty(QString name, QString value)
     if(!propsorder.contains(name))
         propsorder << name;
     props[name] = value;
-    label();
-    _myLabel->update();
+    label()->update();
 }
 QLabel * HedgeHog::label()
 {
     QString text;
 
-    foreach(QString prop, propsorder)
+    if(!killed)
     {
-        if(prop == "id") continue;
-        text += QString("<tr><td>%1</td><td>&nbsp;</td><td>%2</td></tr>").arg(prop,props[prop]);
+        foreach(QString prop, propsorder)
+        {
+            if(prop == "id") continue;
+            text += QString("<tr><td>%1</td><td>&nbsp;</td><td>%2</td></tr>").arg(prop,props[prop]);
+        }
+        _myLabel->setText(QString("HH#%1<table>%2</table>").arg(props["id"],text));
     }
-    _myLabel->setText(QString("HH#%1<table>%2</table>").arg(props["id"],text));
+    else
+        _myLabel->setText(QString::fromUtf8("%1 -- [МЕРТВ]").arg(props["id"]));
     return _myLabel;
 }
 
@@ -51,14 +55,18 @@ QRectF HedgeHog::boundingRect() const
 
 void HedgeHog::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+
     if(!killed)
         painter->drawImage(0,0,_Hedge_dog);
     else
         painter->drawImage(0,0,_Hedge_dog_dead);
+    painter->setPen(QColor::fromRgb(255,255,255));
+    painter->drawText(boundingRect(),Qt::AlignHCenter | Qt::AlignVCenter ,props["id"]);
 }
 
 void HedgeHog::kill()
 {
     killed = true;
     update();
+    label()->update();
 }
