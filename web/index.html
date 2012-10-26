@@ -3,6 +3,7 @@
     <script src="js/jquery-1.8.2.js"></script>
     <script src="js/jquery-ui.js"></script>
     <script src="js/jquery.cookie.js"></script>
+    <script src="js/jquery.rotate.js"></script>
     <script src="js/json.js"></script>
     <script src="js/tools.js"></script>
     <script src="js/bootstrap.js"></script>
@@ -10,15 +11,29 @@
     <link rel="stylesheet" href="css/jquery-ui.css" />
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/desk.css" rel="stylesheet">
   </head>
   <body>
-    <h3>HW</h3>
-      <div id="desk" style="position: relative; width:400px; height:400px; background-color:blue;" >
+    <h3>Hedgehog Wars</h3>
+      <div id="desk" style="position: relative;  margin: 15px;" >
       </div>
   </body>
   
   <script>
     desk = new Desk("#desk");
-    desk.init(5,6);
+    desk.init(8,8);
+    desk.place('cabbage',1,2);
+    desk.place('cabbage',3,2);
+    desk.place('kit',2,2);
+    desk.place('apple',4,4);
+    desk.place('none',1,2);
+    desk.hedgehog_create('masha',4,4);
+    desk.hedgehog_create('misha',4,3);
+    desk.hedgehog_move('misha',3,-1);
+    desk.hedgehog_move('masha',1,-1);
+    desk.hedgehog_move('misha',-2,1);
+    desk.hedgehog_move('masha',1,1);
+    desk.hedgehog_kill('misha');
+    desk.cabbage(2,2,6,7);
   </script>
 </html>
