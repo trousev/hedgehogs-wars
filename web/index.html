@@ -22,7 +22,7 @@
   <script>
     desk = new Desk("#desk");
     desk.init(8,8);
-    desk.place('cabbage',1,2);
+    /*desk.place('cabbage',1,2);
     desk.place('cabbage',3,2);
     desk.place('kit',2,2);
     desk.place('apple',4,4);
@@ -34,6 +34,16 @@
     desk.hedgehog_move('misha',-2,1);
     desk.hedgehog_move('masha',1,1);
     desk.hedgehog_kill('misha');
-    desk.cabbage(2,2,6,7);
+    desk.cabbage(2,2,6,7);*/
+    desk.scenario([
+    [{"place":"cabbage","x":1,"y":2}, {"place":"cabbage","x":3,"y":2}, {"place":"kit","x":2,"y":2}, {"place":"apple","x":4,"y":4}]
+    , [{"create":"masha", "x":4, "y":4}, {"create":"misha", "x": 4, "y": 3}]
+    , [{"move": "misha", "x": 3, "y": -1}, {"move": "masha", "x": 1, "y": -1}]
+    , [{"move": "misha", "x": -2, "y": -1}, {"move": "masha", "x": 1, "y": 1}]
+    , [{"move": "misha", "x": -2, "y": -1}, {"move": "masha", "x": -1, "y": 1}]
+    , [{"throw": "misha", "x": 3, "y": 3}, {"move": "masha", "x" :-1, "y": 1}]
+    , [{"kill": "misha"}, {"move": "masha", "x" :1, "y": 1}]
+    , [{"kill": "masha"}]
+    ]);
   </script>
 </html>

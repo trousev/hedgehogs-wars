@@ -1,9 +1,11 @@
 var Desk = function(desk_id)
 {
   var div = $(desk_id);
-  var hedgehogs = {};
+  this.hedgehogs = {};
   var hedgehog_count = 0;
   var cabbage_count = 0;
+  var scenario = [];
+  var execution_step=0;
   
   cell_id = function(x,y)
   {
@@ -30,19 +32,19 @@ var Desk = function(desk_id)
   }
   this.hedgehog_create = function(name, x,y)
   {
-    hedgehogs[name] = {"name": name, "x": x, "y": y, "no" : hedgehog_count};
+    this.hedgehogs[name] = {"name": name, "x": x, "y": y, "no" : hedgehog_count};
     var html = $("#hedgehogs").html();
     var cx = Desk.cell_width  *x;
     var cy = Desk.cell_height *y;
     hedgehog_count += 1;
-    html += '<div id="hh_'+hedgehogs[name]["no"]+'" class=\"hedgehog alive\" style="position: absolute; left: '+cx+'px; top: '+cy+'px; width: '+Desk.cell_width +'px; height: '+Desk.cell_height +'px;">#'+hedgehogs[name]["no"]+'</div>';
+    html += '<div id="hh_'+this.hedgehogs[name]["no"]+'"unselectable="on" class=\"hedgehog alive\" style="position: absolute; left: '+cx+'px; top: '+cy+'px; width: '+Desk.cell_width +'px; height: '+Desk.cell_height +'px;">#'+this.hedgehogs[name]["no"]+'</div>';
     $("#hedgehogs").html(html);
   }
   this.hedgehog_move = function(name, dx,dy)
   {
-    hedgehogs[name]["x"] += dx;
-    hedgehogs[name]["y"] += dy;
-    var no = hedgehogs[name]["no"];
+    this.hedgehogs[name]["x"] += dx;
+    this.hedgehogs[name]["y"] += dy;
+    var no = this.hedgehogs[name]["no"];
     $("#hh_"+no).animate({
           left: '+='+Desk.cell_width*dx,
           top: '+='+Desk.cell_height*dy
@@ -50,7 +52,7 @@ var Desk = function(desk_id)
   }
   this.hedgehog_kill = function(name)
   {
-    var no = hedgehogs[name]["no"];
+    var no = this.hedgehogs[name]["no"];
     $("#hh_"+no).animate({
       opacity: 0.3
     },500);
@@ -75,8 +77,39 @@ var Desk = function(desk_id)
     },1000, function(){
       $("#cabbage").remove();
     });
-    
   }
+  this.scenario = function(scen, step)
+  {
+    scenario = scen;
+    execution_step = 0;
+    Desk.instance = this;
+    setInterval(this.step, 1000);
+  }
+  this.step = function()
+  {
+    var script = scenario[execution_step];
+    for(i in script)
+    {
+      action = script[i];
+      if(action["place"] != undefined)
+        Desk.instance.place(action["place"],action["x"], action["y"]);
+      else if(action["create"] != undefined)
+        Desk.instance.hedgehog_create(action["create"],action["x"], action["y"]);
+      else if(action["move"] != undefined)
+        Desk.instance.hedgehog_move(action["move"],action["x"], action["y"]);
+      else if(action["throw"] != undefined)
+        Desk.instance.cabbage(Desk.instance.hedgehogs[action["throw"]]["x"],Desk.instance.hedgehogs[action["throw"]]["y"],action["x"],action["y"]);
+      else if(action["kill"] != undefined)
+      {
+        Desk.instance.hedgehog_kill(action["kill"]);
+      }
+      else
+        alert("Unknonw action");
+    }
+    execution_step += 1;
+    //setTimeout(this.step(), 1000);
+  }
+  
 };
 
 Desk.cell_width = 32
